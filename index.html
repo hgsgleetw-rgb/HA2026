@@ -207,6 +207,8 @@ function FeaturedCard({ d }) {
 
 function App() {
   const [person, setPerson] = useState("ding");
+  const now = new Date();
+  const todayStr = (now.getMonth()+1) + "/" + now.getDate();
   const [wk, setWk] = useState(1);
   const p = PEOPLE[person];
   const weekCfg = WEEKS[wk];
@@ -268,7 +270,7 @@ function App() {
         flexDirection:"column", gap:8, minHeight:0, overflow:"hidden" }}>
         <div style={{ display:"grid", gridTemplateColumns:`repeat(${cols},1fr)`,
           gap:8, flex:weekCfg.partial?"0 0 auto":3, minHeight:0 }}>
-          {gridDays.map(d => <DayCard key={d.date} d={d} isToday={d.date==="5/4"} todayColor={p.todayColor}/>)}
+          {gridDays.map(d => <DayCard key={d.date} d={d} isToday={d.date===todayStr} todayColor={p.todayColor}/>)}
         </div>
         <div style={{ flexShrink:0 }}>
           <div style={{ fontSize:10, color:"#a8a29e", marginBottom:4, paddingLeft:2, letterSpacing:1 }}>本週最佳日</div>
