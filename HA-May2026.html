@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>五月運勢 2026</title>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, 'PingFang TC', 'Noto Sans TC', sans-serif; }
+    #root { height: 100vh; display: flex; flex-direction: column; max-width: 430px; margin: 0 auto; }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState } = React;
+
+// ── 丁火 Data ──────────────────────────────────────────────────────────────
+const DING = [
+  { date:"5/1",  wd:"五", pillar:"乙亥", god:"偏印", score:4, rating:"good",    emoji:"⭐", title:"靈感湧現",  desc:"乙木偏印生丁火，直覺特別敏銳，適合獨自深思或創作。", tip:"把腦中的靈感寫下來，今天想到的點子不要放過", warn:"避免負面新聞，情緒容易隨外界起伏", lucky:"#4ade80",luckyN:"草綠色",wear:"#15803d",wearN:"森林綠",avoid:"#1e3a5f",avoidN:"深藍色"},
+  { date:"5/2",  wd:"六", pillar:"丙子", god:"劫財", score:3, rating:"neutral", emoji:"○",  title:"平靜休假",  desc:"劫財日能量平穩，子水略剋火，週六適合安靜充電。", tip:"給自己一個完全放空的下午，什麼都不用想", warn:"子水旺，今天容易感冷，注意保暖", lucky:"#fb923c",luckyN:"暖橘色",wear:"#c2410c",wearN:"深橘棕",avoid:"#0f172a",avoidN:"黑色"},
+  { date:"5/3",  wd:"日", pillar:"丁丑", god:"比肩", score:4, rating:"good",    emoji:"⭐", title:"迎接新週",  desc:"比肩日同氣相求，身體能量漸旺，為即將到來的一週暖機。", tip:"週日晚上整理一下這週三個最重要的目標", warn:"丑土洩火，飲食避免生冷，注意腸胃", lucky:"#ef4444",luckyN:"鮮紅色",wear:"#991b1b",wearN:"酒紅色",avoid:"#e5e7eb",avoidN:"白/銀色"},
+  { date:"5/4",  wd:"一", pillar:"戊寅", god:"傷官", score:2, rating:"caution", emoji:"⚠️", title:"慎選言辭",  desc:"傷官洩丁火，創意豐沛但說話容易衝動，提案前多演練。", tip:"今天說話前先在心裡想一遍，特別是跟主管溝通時", warn:"開會時不要當場反駁，事後私下溝通更有效", lucky:"#4ade80",luckyN:"草綠色",wear:"#166534",wearN:"墨綠色",avoid:"#e5e7eb",avoidN:"白/米白"},
+  { date:"5/5",  wd:"二", pillar:"己卯", god:"食神", score:4, rating:"good",    emoji:"⭐", title:"才華爆發",  desc:"立夏節氣！卯木生火，食神展才，設計能量最旺的一天。", tip:"主動展示設計成果，今天提案最有說服力，好好把握", warn:"節氣交替，多喝溫水，注意身體適應", lucky:"#86efac",luckyN:"嫩綠色",wear:"#15803d",wearN:"草綠色",avoid:"#164e63",avoidN:"深水藍"},
+  { date:"5/6",  wd:"三", pillar:"庚辰", god:"正財", score:3, rating:"neutral", emoji:"○",  title:"穩健推進",  desc:"正財日能量平穩，適合處理例行工作和細節，不需要冒進。", tip:"整理作品集或工作文件，為未來申請PhD做一點準備", warn:"避免衝動消費，今天財來財去，守住才是真的", lucky:"#f97316",luckyN:"橘紅色",wear:"#c2410c",wearN:"磚紅色",avoid:"#d4d4d4",avoidN:"銀/金色"},
+  { date:"5/7",  wd:"四", pillar:"辛巳", god:"偏財", score:4, rating:"good",    emoji:"⭐", title:"把握機緣",  desc:"巳火比肩幫扶丁火，能量充足，偏財日有意外機緣出現。", tip:"留意工作上的新機會，主動跟同事或主管多交流一下", warn:"偏財來去快，機會出現要快速判斷，不要拖", lucky:"#ef4444",luckyN:"鮮紅色",wear:"#7f1d1d",wearN:"深酒紅",avoid:"#d4d4d4",avoidN:"淺灰銀"},
+  { date:"5/8",  wd:"五", pillar:"壬午", god:"正官", score:2, rating:"caution", emoji:"⚠️", title:"職場謹慎",  desc:"壬水正官剋丁火，主管壓力感重，但午火護身，撐得住。", tip:"做好份內工作就好，不要主動挑戰規則或強硬表達意見", warn:"今天最忌遲到和細節失誤，主管格外注意你", lucky:"#ef4444",luckyN:"正紅色",wear:"#c2410c",wearN:"橘紅色",avoid:"#1e3a5f",avoidN:"藏青黑"},
+  { date:"5/9",  wd:"六", pillar:"癸未", god:"七殺", score:1, rating:"warn",    emoji:"⚡", title:"耍廢充電",  desc:"七殺日能量最弱，容易疲憊焦慮，幸好是週六！", tip:"完全放鬆，睡到自然醒，不要安排任何重要的事", warn:"七殺日出風頭越多越麻煩，低調就是最好的護身符", lucky:"#fb923c",luckyN:"暖橘色",wear:"#c2410c",wearN:"磚橘紅",avoid:"#1e1b4b",avoidN:"黑/深紫"},
+  { date:"5/10", wd:"日", pillar:"甲申", god:"正印", score:5, rating:"best",    emoji:"🌟", title:"本週最強",  desc:"甲木正印直接生丁火！申金雖洩，但貴人能量強大，萬事皆順。", tip:"重要決定或聯絡安排在今天，貴人相助事半功倍", warn:"申金洩火，注意用眼過度，避免長時間盯螢幕", lucky:"#4ade80",luckyN:"翠綠色",wear:"#14532d",wearN:"祖母綠",avoid:"#f5f5f4",avoidN:"白/米色"},
+  { date:"5/11", wd:"一", pillar:"乙酉", god:"偏印", score:4, rating:"good",    emoji:"⭐", title:"直覺清晰",  desc:"乙木偏印生火，思路清晰敏銳，開週判斷力最準的一天。", tip:"把本週最難的設計決策安排在今天早上", warn:"酉金洩身，避免過度承諾，量力而為", lucky:"#86efac",luckyN:"薄荷綠",wear:"#166534",wearN:"橄欖綠",avoid:"#fef3c7",avoidN:"金黃色"},
+  { date:"5/12", wd:"二", pillar:"丙戌", god:"劫財", score:3, rating:"neutral", emoji:"○",  title:"競爭意識",  desc:"劫財日有競爭感，戌土食神略洩，平穩執行避免跟人較勁。", tip:"專注自己的工作進度，不要被別人的節奏影響", warn:"刻意讓同事一步，今天不是爭第一的日子", lucky:"#fb923c",luckyN:"焦糖橘",wear:"#ea580c",wearN:"暖橘色",avoid:"#0c4a6e",avoidN:"深水藍"},
+  { date:"5/13", wd:"三", pillar:"丁亥", god:"比肩", score:4, rating:"good",    emoji:"⭐", title:"同頻共振",  desc:"比肩日同氣相求，自我能量穩定，亥水七殺被比肩緩和。", tip:"跟信任的朋友或同事深度交流，今天特別有共鳴感", warn:"亥水暗藏，今天避免夜晚獨自外出", lucky:"#f87171",luckyN:"玫瑰紅",wear:"#991b1b",wearN:"酒紅色",avoid:"#0f172a",avoidN:"深海藍黑"},
+  { date:"5/14", wd:"四", pillar:"戊子", god:"傷官", score:1, rating:"warn",    emoji:"⚡", title:"謹慎言行",  desc:"傷官洩火，子水七殺也在地支，能量雙重消耗，本週最弱。", tip:"今天少說多做，避免在會議上發表太強烈的意見", warn:"本週最弱日，減少社交，避免簽任何重要文件", lucky:"#4ade80",luckyN:"鮮綠色",wear:"#15803d",wearN:"翠綠色",avoid:"#0f172a",avoidN:"黑/深藍"},
+  { date:"5/15", wd:"五", pillar:"己丑", god:"食神", score:4, rating:"good",    emoji:"⭐", title:"創意湧現",  desc:"食神日才華自然流露，己土讓你的創意被看見，週五完美收尾。", tip:"把本週設計成果整理一下，今天呈現最好看", warn:"說話流利但容易說太多，保持重點清晰", lucky:"#a3e635",luckyN:"黃綠色",wear:"#4d7c0f",wearN:"酪梨綠",avoid:"#1d4ed8",avoidN:"藍色系"},
+  { date:"5/16", wd:"六", pillar:"庚寅", god:"正財", score:3, rating:"neutral", emoji:"○",  title:"財運平穩",  desc:"正財日，寅木生火補能量，週末小確幸，不需要大動作。", tip:"規劃一下個人財務或存款計劃，今天頭腦清晰", warn:"避免衝動網購，寅木雖幫身但庚金洩火", lucky:"#fda4af",luckyN:"珊瑚色",wear:"#e11d48",wearN:"珊瑚紅",avoid:"#d4d4d4",avoidN:"白/淺金"},
+  { date:"5/17", wd:"日", pillar:"辛卯", god:"偏財", score:4, rating:"good",    emoji:"⭐", title:"週末機緣",  desc:"卯木偏印幫扶，辛金偏財帶來週末驚喜，本週收尾最順。", tip:"跟重要的人好好相處，今天的情感連結特別深", warn:"情感投資比財務投資重要，別讓金錢成為話題", lucky:"#4ade80",luckyN:"森林綠",wear:"#166534",wearN:"深綠色",avoid:"#a3a3a3",avoidN:"淺灰銀"},
+  { date:"5/18", wd:"一", pillar:"壬辰", god:"正官", score:2, rating:"caution", emoji:"⚠️", title:"壓力開週",  desc:"正官剋丁火，開週壓力重，辰土偏印有一定護持，撐得住。", tip:"把最難的工作放今天早上做，午後壓力會漸緩", warn:"主管特別關注你，把心思放工作上，不要分心", lucky:"#ef4444",luckyN:"正紅色",wear:"#7f1d1d",wearN:"磚紅色",avoid:"#1e3a5f",avoidN:"深藍/黑"},
+  { date:"5/19", wd:"二", pillar:"癸巳", god:"七殺", score:1, rating:"warn",    emoji:"⚡", title:"謹慎低調",  desc:"七殺最強，巳火比肩稍有保護，但能量消耗大，要珍惜。", tip:"今天只處理必要的事，不要額外攬責任，早點休息", warn:"容易焦慮，深呼吸，今天避免跟任何人爭論", lucky:"#fb923c",luckyN:"亮橘色",wear:"#c2410c",wearN:"橘紅色",avoid:"#0f172a",avoidN:"黑/深藍"},
+  { date:"5/20", wd:"三", pillar:"甲午", god:"正印", score:5, rating:"best",    emoji:"🌟", title:"本週最強",  desc:"甲木正印生丁火，午火再幫身！小滿節氣，能量最旺最滿。", tip:"所有重要決定或溝通安排今天，效果加倍，貴人就在身邊", warn:"能量最旺但忌過度自信，腳踏實地最重要", lucky:"#4ade80",luckyN:"翠綠色",wear:"#14532d",wearN:"祖母綠",avoid:"#f5f5f4",avoidN:"白/銀色"},
+  { date:"5/21", wd:"四", pillar:"乙未", god:"偏印", score:4, rating:"good",    emoji:"⭐", title:"學習成長",  desc:"乙木偏印持續生火，未土洩秀，適合深度學習和研究。", tip:"研究PhD申請資料或聯絡歐洲教授，今天靈感特別好", warn:"容易鑽牛角尖，遇到問題找人討論不要悶著", lucky:"#86efac",luckyN:"薄荷綠",wear:"#15803d",wearN:"草綠色",avoid:"#d4d4d4",avoidN:"白/淺灰"},
+  { date:"5/22", wd:"五", pillar:"丙申", god:"劫財", score:3, rating:"neutral", emoji:"○",  title:"週末前謹慎", desc:"劫財競爭感，申金洩火，財務需謹慎，週五好好收尾。", tip:"不要在今天做財務上的衝動決定，等週末冷靜後再說", warn:"申金洩火，下班後不要過度消費，也不要太晚睡", lucky:"#f97316",luckyN:"陶土橘",wear:"#9a3412",wearN:"磚橘色",avoid:"#f5f5f4",avoidN:"白/米白"},
+  { date:"5/23", wd:"六", pillar:"丁酉", god:"比肩", score:3, rating:"neutral", emoji:"○",  title:"輕鬆週末",  desc:"比肩日同氣，能量穩定，酉金食神輕微洩身，整體平穩。", tip:"週六做自己喜歡的設計或創作，純粹享受過程", warn:"丁火最怕耗損，今天不要熬夜，早點休息", lucky:"#fca5a5",luckyN:"暖粉紅",wear:"#b91c1c",wearN:"深酒紅",avoid:"#fef3c7",avoidN:"金黃/米色"},
+  { date:"5/24", wd:"日", pillar:"戊戌", god:"傷官", score:2, rating:"caution", emoji:"⚠️", title:"情緒管理",  desc:"傷官日說話直，戌土再洩火，週日容易跟親近的人有口角。", tip:"今天多傾聽少說話，避免在家人面前情緒化", warn:"雙土洩火，今天感到疲憊是正常的，早點休息補能量", lucky:"#4ade80",luckyN:"橄欖綠",wear:"#166534",wearN:"深綠色",avoid:"#f5f5f4",avoidN:"白/米白"},
+  { date:"5/25", wd:"一", pillar:"己亥", god:"食神", score:4, rating:"good",    emoji:"⭐", title:"才華開週",  desc:"食神日創意旺，亥水七殺被食神制化，開週狀態佳。", tip:"把最有創意的設計工作安排在今天，靈感和執行力並存", warn:"亥水在地支，避免讓情緒影響工作判斷", lucky:"#a3e635",luckyN:"嫩綠色",wear:"#4d7c0f",wearN:"黃綠色",avoid:"#0f172a",avoidN:"深藍/黑"},
+  { date:"5/26", wd:"二", pillar:"庚子", god:"正財", score:3, rating:"neutral", emoji:"○",  title:"財務思考",  desc:"正財日理財運好，子水略剋火，穩健執行最重要。", tip:"規劃幾個月後出發歐洲的存款目標，今天頭腦清晰", warn:"子水旺，容易感冷，注意保暖；避免信用卡衝動消費", lucky:"#fda4af",luckyN:"珊瑚紅",wear:"#e11d48",wearN:"橘紅色",avoid:"#0c4a6e",avoidN:"黑/深藍"},
+  { date:"5/27", wd:"三", pillar:"辛丑", god:"偏財", score:4, rating:"good",    emoji:"⭐", title:"意外之喜",  desc:"偏財日有意外機緣，丑土食神洩秀展才，工作有好事發生。", tip:"主動跟主管分享你的設計想法，今天特別有說服力", warn:"好消息下午比上午多，重要事情安排午後", lucky:"#ef4444",luckyN:"暖紅色",wear:"#7f1d1d",wearN:"磚紅色",avoid:"#a3a3a3",avoidN:"銀/淺金"},
+  { date:"5/28", wd:"四", pillar:"壬寅", god:"正官", score:2, rating:"caution", emoji:"⚠️", title:"謹慎應對",  desc:"正官剋丁火，寅木偏印稍有緩和，職場壓力感重，低調應對。", tip:"讓主管主導，你做好支持角色，不要主動出頭", warn:"確保工作沒有明顯漏洞，主管今天容易發現細節問題", lucky:"#4ade80",luckyN:"森林綠",wear:"#15803d",wearN:"墨綠色",avoid:"#1e3a5f",avoidN:"藏青深藍"},
+  { date:"5/29", wd:"五", pillar:"癸卯", god:"七殺", score:1, rating:"warn",    emoji:"⚡", title:"低調避風",  desc:"七殺日能量最弱，卯木偏印稍有護持，週五忍一下就好了。", tip:"下班後快回家，不要參加耗能的社交活動", warn:"不要在任何群組發表意見，七殺日最容易捲入是非", lucky:"#fb923c",luckyN:"熱橘色",wear:"#ea580c",wearN:"橘紅色",avoid:"#0f172a",avoidN:"黑/深藍"},
+  { date:"5/30", wd:"六", pillar:"甲辰", god:"正印", score:5, rating:"best",    emoji:"🌟", title:"月末最強",  desc:"甲木正印最強生火！辰土偏印再加持，五月最後一個高峰日。", tip:"安排一件對未來最重要的事，今天做事半功倍，貴人在側", warn:"雖是最強日，但避免過度消耗在社交上，留能量給重要事", lucky:"#4ade80",luckyN:"翠綠色",wear:"#14532d",wearN:"祖母綠",avoid:"#f5f5f4",avoidN:"白/米色"},
+  { date:"5/31", wd:"日", pillar:"乙巳", god:"偏印", score:4, rating:"good",    emoji:"⭐", title:"月末充電",  desc:"乙木偏印生火，巳火助身，五月最後一天能量飽滿收尾。", tip:"整理五月成果，設定六月目標，為新月份做好準備", warn:"今天適合反思總結，不適合開始新計劃", lucky:"#86efac",luckyN:"草綠色",wear:"#15803d",wearN:"嫩綠色",avoid:"#d4d4d4",avoidN:"白/銀色"},
+];
+
+// ── 甲木 Data ──────────────────────────────────────────────────────────────
+const JIA = [
+  { date:"5/1",  wd:"五", pillar:"乙亥", god:"劫財", score:2, rating:"caution", emoji:"⚠️", title:"競爭意識",  desc:"劫財日競爭心旺，亥水偏印再強身，能量過旺容易衝動行事。", tip:"今天主動讓別人一步，不是輸，是智慧", warn:"容易跟人起暗勁，刻意壓住競爭衝動", lucky:"#fbbf24",luckyN:"土黃色",wear:"#92400e",wearN:"棕褐色",avoid:"#166534",avoidN:"深綠色"},
+  { date:"5/2",  wd:"六", pillar:"丙子", god:"食神", score:3, rating:"neutral", emoji:"○",  title:"創意初現",  desc:"食神展才，但子水正印在地支略強身，能量需要找出口。", tip:"今天做有創意的工作，把想法用行動展現出來", warn:"子水助木，今天容易過度自信，決定前多想一步", lucky:"#f97316",luckyN:"暖橘色",wear:"#c2410c",wearN:"橘紅色",avoid:"#0f172a",avoidN:"黑色"},
+  { date:"5/3",  wd:"日", pillar:"丁丑", god:"傷官", score:4, rating:"good",    emoji:"⭐", title:"表達力旺",  desc:"傷官日口才和創意最旺，丑土正財在地支，才華能帶來財運。", tip:"今天最適合表達想法或提案，說服力強", warn:"傷官日容易太直接，注意不要說話傷人", lucky:"#ef4444",luckyN:"鮮紅色",wear:"#991b1b",wearN:"酒紅色",avoid:"#166534",avoidN:"深綠色"},
+  { date:"5/4",  wd:"一", pillar:"戊寅", god:"偏財", score:4, rating:"good",    emoji:"⭐", title:"財運開動",  desc:"偏財日行動力旺，戊土偏財帶來機會，寅木比肩雖添木氣但整體佳。", tip:"今天最適合主動出擊，去爭取你想要的東西", warn:"寅木比肩過旺，容易固執，今天試著聽別人意見", lucky:"#fbbf24",luckyN:"金黃色",wear:"#ca8a04",wearN:"土金色",avoid:"#1e3a5f",avoidN:"深藍色"},
+  { date:"5/5",  wd:"二", pillar:"己卯", god:"正財", score:3, rating:"neutral", emoji:"○",  title:"穩健理財",  desc:"正財日收入穩定，立夏！卯木劫財在地支，財星有被搶的風險。", tip:"今天穩健執行，不要冒進，把手邊工作做好", warn:"卯木劫財，今天小心被人分走功勞或利益", lucky:"#d97706",luckyN:"琥珀色",wear:"#92400e",wearN:"棕色",avoid:"#15803d",avoidN:"墨綠色"},
+  { date:"5/6",  wd:"三", pillar:"庚辰", god:"七殺", score:5, rating:"best",    emoji:"🌟", title:"本週最強",  desc:"庚金七殺直接剋甲木！身強甲木最愛挑戰，成就感最強的一天。", tip:"最難的工作今天接，越有挑戰越能展現你的能力", warn:"能量極強，避免蠻幹，要有策略地衝才有效果", lucky:"#e5e7eb",luckyN:"銀白色",wear:"#6b7280",wearN:"銀灰色",avoid:"#166534",avoidN:"深綠色"},
+  { date:"5/7",  wd:"四", pillar:"辛巳", god:"正官", score:4, rating:"good",    emoji:"⭐", title:"規矩中發光", desc:"正官日有規範感，巳火食神在地支，才華可以在規則內展現。", tip:"今天跟上司或長輩的溝通特別順，主動匯報成果", warn:"正官剋木，今天按規矩來，不要挑戰體制", lucky:"#f5f5f4",luckyN:"珍珠白",wear:"#d1d5db",wearN:"淺銀色",avoid:"#1e3a5f",avoidN:"深海藍"},
+  { date:"5/8",  wd:"五", pillar:"壬午", god:"偏印", score:2, rating:"caution", emoji:"⚠️", title:"能量過旺",  desc:"壬水偏印生甲木，身強再加強，午火傷官在地支稍有洩身，略有緩和。", tip:"今天多做少想，用行動把過旺的能量釋放出去", warn:"能量過旺時容易衝動，任何決定都多想五分鐘再行動", lucky:"#f97316",luckyN:"火橘色",wear:"#c2410c",wearN:"磚橘色",avoid:"#0c4a6e",avoidN:"深藍色"},
+  { date:"5/9",  wd:"六", pillar:"癸未", god:"正印", score:1, rating:"warn",    emoji:"⚡", title:"靜下來想",  desc:"正印最旺，甲木身強再被滋養，能量到頂容易有壓迫感。", tip:"今天不要強行推進，靜下來想清楚方向再動", warn:"最忌躁進，今天越急越出錯，先深呼吸", lucky:"#fb923c",luckyN:"暖橘色",wear:"#ea580c",wearN:"火橘色",avoid:"#1e1b4b",avoidN:"黑/深紫"},
+  { date:"5/10", wd:"日", pillar:"甲申", god:"比肩", score:3, rating:"neutral", emoji:"○",  title:"較勁之日",  desc:"比肩日同質競爭，申金七殺在地支，競爭中反而有成就機會。", tip:"遇到競爭對手反而是好事，今天以競爭激發自己", warn:"比肩帶來競爭也帶來耗損，不要跟人賭氣", lucky:"#fbbf24",luckyN:"金黃色",wear:"#ca8a04",wearN:"土金色",avoid:"#15803d",avoidN:"綠色系"},
+  { date:"5/11", wd:"一", pillar:"乙酉", god:"劫財", score:3, rating:"neutral", emoji:"○",  title:"暗中競爭",  desc:"劫財日競爭感重，酉金正官在地支，職場有規範保護，競爭中有秩序。", tip:"今天用實力說話，不要被旁人影響節奏", warn:"有人可能搶你的機會，今天提前把成果展示出來", lucky:"#d1d5db",luckyN:"淺銀色",wear:"#6b7280",wearN:"銀灰色",avoid:"#166534",avoidN:"森林綠"},
+  { date:"5/12", wd:"二", pillar:"丙戌", god:"食神", score:4, rating:"good",    emoji:"⭐", title:"才華大爆發", desc:"食神日創意最旺，戌土偏財在地支，才華能帶來實質財運回報。", tip:"今天把你最好的想法說出來，創意能轉化成利益", warn:"食神旺時容易說太多，保持重點，不要發散", lucky:"#f97316",luckyN:"亮橘色",wear:"#c2410c",wearN:"橘紅色",avoid:"#1e3a5f",avoidN:"藏青黑"},
+  { date:"5/13", wd:"三", pillar:"丁亥", god:"傷官", score:3, rating:"neutral", emoji:"○",  title:"表達要謹慎", desc:"傷官日口才旺，但亥水偏印在地支再助木，能量略過旺需注意。", tip:"今天說話有力量，但記得控制方向，別太情緒化", warn:"亥水助木，今天容易話說得太直，傷了不該傷的人", lucky:"#fbbf24",luckyN:"金黃色",wear:"#92400e",wearN:"土棕色",avoid:"#0f172a",avoidN:"黑色"},
+  { date:"5/14", wd:"四", pillar:"戊子", god:"偏財", score:2, rating:"caution", emoji:"⚠️", title:"財機有阻",  desc:"偏財日有機會，子水正印在地支再強身，能量過旺影響判斷力。", tip:"有機會就要抓，但今天判斷力略下降，找人商量再做決定", warn:"子水助木，今天容易高估自己，謹慎評估風險", lucky:"#fbbf24",luckyN:"土黃色",wear:"#ca8a04",wearN:"金土色",avoid:"#1d4ed8",avoidN:"深藍色"},
+  { date:"5/15", wd:"五", pillar:"己丑", god:"正財", score:3, rating:"neutral", emoji:"○",  title:"財運穩健",  desc:"正財日收入穩定，丑土正財在地支財星再現，財運雙重但要守住。", tip:"今天穩健收成，不要冒進，把既有的成果鞏固好", warn:"正財雖好，但甲木剋土，財來財去，今天守財最重要", lucky:"#d97706",luckyN:"琥珀色",wear:"#92400e",wearN:"棕色",avoid:"#166534",avoidN:"深綠色"},
+  { date:"5/16", wd:"六", pillar:"庚寅", god:"七殺", score:5, rating:"best",    emoji:"🌟", title:"本週最強",  desc:"庚金七殺制木！甲木最愛挑戰，寅木比肩雖在但七殺力量壓倒一切。", tip:"今天接最難的任務，越有挑戰越能展現你的能力", warn:"七殺日能量極強，要有策略，不是蠻力", lucky:"#e5e7eb",luckyN:"銀白色",wear:"#9ca3af",wearN:"冷銀色",avoid:"#166534",avoidN:"森林綠"},
+  { date:"5/17", wd:"日", pillar:"辛卯", god:"正官", score:3, rating:"neutral", emoji:"○",  title:"職場規矩",  desc:"正官日有職場規範，卯木劫財在地支，競爭中仍有秩序保護。", tip:"今天配合規則做事，在體制內把事情做好", warn:"卯木旺，今天競爭心強，注意不要因衝動破壞關係", lucky:"#f5f5f4",luckyN:"白色",wear:"#e5e7eb",wearN:"珍珠白",avoid:"#15803d",avoidN:"綠色"},
+  { date:"5/18", wd:"一", pillar:"壬辰", god:"偏印", score:2, rating:"caution", emoji:"⚠️", title:"思緒紛亂",  desc:"偏印生木，辰土偏財在地支有些許幫助，但整體能量過旺難以控制。", tip:"今天多執行，少分析，避免想太多反而什麼都沒做", warn:"能量過旺時最忌優柔寡斷，今天做了就做，不要後悔", lucky:"#f97316",luckyN:"暖橘色",wear:"#c2410c",wearN:"橘紅色",avoid:"#0c4a6e",avoidN:"深水藍"},
+  { date:"5/19", wd:"二", pillar:"癸巳", god:"正印", score:2, rating:"caution", emoji:"⚠️", title:"能量到頂",  desc:"正印再生木，巳火食神在地支略有洩身，稍稍平衡但仍要注意。", tip:"今天做有創意的工作，把過旺的能量透過作品釋放", warn:"能量到頂容易自我感覺良好，今天聽別人說話多於自己說", lucky:"#fb923c",luckyN:"亮橘色",wear:"#ea580c",wearN:"火橘色",avoid:"#1e3a5f",avoidN:"深藍色"},
+  { date:"5/20", wd:"三", pillar:"甲午", god:"比肩", score:3, rating:"neutral", emoji:"○",  title:"同場競技",  desc:"比肩日競爭，午火傷官在地支洩木，才華反而能被看見，小滿節氣。", tip:"今天在競爭中展現真實能力，不需要壓制對手", warn:"小滿節氣，今天能量最複雜，保持冷靜最重要", lucky:"#fbbf24",luckyN:"黃色",wear:"#ca8a04",wearN:"土金色",avoid:"#15803d",avoidN:"綠色系"},
+  { date:"5/21", wd:"四", pillar:"乙未", god:"劫財", score:2, rating:"caution", emoji:"⚠️", title:"競爭加劇",  desc:"劫財日競爭感最重，未土正財在地支，財被搶的風險高。", tip:"今天提前保護好自己的成果和想法，別輕易透露", warn:"劫財最容易讓利益外流，謹慎合作、謹慎分享", lucky:"#fbbf24",luckyN:"土黃色",wear:"#92400e",wearN:"棕色",avoid:"#166534",avoidN:"深綠色"},
+  { date:"5/22", wd:"五", pillar:"丙申", god:"食神", score:5, rating:"best",    emoji:"🌟", title:"才華＋力量", desc:"丙火食神洩木展才，申金七殺在地支！食神＋七殺雙重加持，本週最強！", tip:"今天把最好的才華展現出來，還能扛最難的挑戰", warn:"狀態太好容易輕率，保持策略思維", lucky:"#ef4444",luckyN:"鮮紅色",wear:"#c2410c",wearN:"橘紅色",avoid:"#166534",avoidN:"森林綠"},
+  { date:"5/23", wd:"六", pillar:"丁酉", god:"傷官", score:4, rating:"good",    emoji:"⭐", title:"口才大開",  desc:"傷官日加酉金正官，說話有力又有格調，今天表達最有說服力。", tip:"今天最適合做提案、談判或任何需要說服別人的事", warn:"傷官雖強，選對時機說話，不是任何場合都適合", lucky:"#f97316",luckyN:"橘色",wear:"#c2410c",wearN:"磚紅色",avoid:"#1e3a5f",avoidN:"深藍色"},
+  { date:"5/24", wd:"日", pillar:"戊戌", god:"偏財", score:4, rating:"good",    emoji:"⭐", title:"財運雙旺",  desc:"偏財坐戌土，財星雙現，今天行動力和財運都強，把握機會。", tip:"今天主動去爭取資源和機會，有行動才有收穫", warn:"偏財來去快，把握當下，不要猶豫", lucky:"#fbbf24",luckyN:"金黃色",wear:"#ca8a04",wearN:"土金色",avoid:"#0f172a",avoidN:"黑色"},
+  { date:"5/25", wd:"一", pillar:"己亥", god:"正財", score:2, rating:"caution", emoji:"⚠️", title:"財有阻礙",  desc:"正財日有穩定財，但亥水偏印在地支強身，影響財務判斷力。", tip:"今天穩健行事，有機會輕輕推一下就好，不要大動作", warn:"亥水助木過旺，今天容易高估財務狀況，保守估計", lucky:"#d97706",luckyN:"琥珀色",wear:"#92400e",wearN:"棕色",avoid:"#0f172a",avoidN:"深黑色"},
+  { date:"5/26", wd:"二", pillar:"庚子", god:"七殺", score:4, rating:"good",    emoji:"⭐", title:"挑戰日",   desc:"庚金七殺制木，子水正印在地支略有干擾，但七殺力道仍旺，能扛壓。", tip:"今天扛起難題，展現你的抗壓力，這是你最強的地方", warn:"子水稍礙，今天要有計劃地衝，不是盲目行動", lucky:"#e5e7eb",luckyN:"銀白色",wear:"#d1d5db",wearN:"淺銀色",avoid:"#0c4a6e",avoidN:"深藍色"},
+  { date:"5/27", wd:"三", pillar:"辛丑", god:"正官", score:4, rating:"good",    emoji:"⭐", title:"職場加分",  desc:"正官日在規則中展現實力，丑土正財在地支財星再現，事業財運雙旺。", tip:"今天主動展示工作成果，跟上司溝通特別順利", warn:"正官剋木，今天少一點個人主義，配合團隊更有效", lucky:"#f5f5f4",luckyN:"珍珠白",wear:"#e5e7eb",wearN:"白色系",avoid:"#15803d",avoidN:"綠色"},
+  { date:"5/28", wd:"四", pillar:"壬寅", god:"偏印", score:1, rating:"warn",    emoji:"⚡", title:"能量爆表",  desc:"壬水偏印＋寅木比肩，木氣雙重強化，能量完全失控，本週最難控制。", tip:"今天不要做任何重要決定，執行既有計劃就好", warn:"最容易衝動行事，今天慢下來是最難也最重要的事", lucky:"#fb923c",luckyN:"亮橘色",wear:"#ea580c",wearN:"火橘色",avoid:"#0f172a",avoidN:"深黑藍"},
+  { date:"5/29", wd:"五", pillar:"癸卯", god:"正印", score:1, rating:"warn",    emoji:"⚡", title:"雙木衝動",  desc:"癸水正印＋卯木劫財，木氣最強，本月最難控制的能量日。", tip:"今天一定要運動或創作，把能量用在有意義的事上", warn:"最容易因衝動傷人，今天謹慎說話，有話明天再說", lucky:"#f97316",luckyN:"火橘色",wear:"#c2410c",wearN:"橘色",avoid:"#166534",avoidN:"深綠色"},
+  { date:"5/30", wd:"六", pillar:"甲辰", god:"比肩", score:3, rating:"neutral", emoji:"○",  title:"較勁收尾",  desc:"比肩日競爭，辰土偏財在地支，競爭中有財運機會，月末把握。", tip:"今天把競爭轉化為動力，用行動把機會搶回來", warn:"月末週六，避免因舊事重提跟人起不必要衝突", lucky:"#fbbf24",luckyN:"金黃色",wear:"#ca8a04",wearN:"土金色",avoid:"#15803d",avoidN:"中綠色"},
+  { date:"5/31", wd:"日", pillar:"乙巳", god:"劫財", score:3, rating:"neutral", emoji:"○",  title:"月末充電",  desc:"劫財日競爭，巳火食神在地支展才，月末才華仍旺，好好收尾。", tip:"整理五月成果，設定六月目標，為新月份充好電", warn:"五月最後一天，不要讓情緒影響對這個月的總評價", lucky:"#f97316",luckyN:"橘色",wear:"#c2410c",wearN:"磚橘色",avoid:"#166534",avoidN:"深綠色"},
+];
+
+const WEEKS = [
+  { label:"5/1－5/3",   slice:[0,3],   partial:true  },
+  { label:"5/4－5/10",  slice:[3,10],  partial:false },
+  { label:"5/11－5/17", slice:[10,17], partial:false },
+  { label:"5/18－5/24", slice:[17,24], partial:false },
+  { label:"5/25－5/31", slice:[24,31], partial:false },
+];
+
+const STYLE = {
+  best:    { bg:"#fefce8", border:"#eab308", badge:"#854d0e" },
+  good:    { bg:"#f0fdf4", border:"#22c55e", badge:"#14532d" },
+  neutral: { bg:"#f8fafc", border:"#cbd5e1", badge:"#334155" },
+  caution: { bg:"#fffbeb", border:"#f59e0b", badge:"#92400e" },
+  warn:    { bg:"#fef2f2", border:"#ef4444", badge:"#7f1d1d" },
+};
+
+const PEOPLE = {
+  ding: { name:"🕯️ 丁火", sub:"身弱・癸巳大運", data:DING, headerBg:"#1c1917", headerAccent:"#fef3c7", dotActive:"#fbbf24", dotInactive:"#44403c", navBg:"#3d3532", todayColor:"#c2410c", bodyBg:"#fafaf9" },
+  jia:  { name:"🌿 甲木", sub:"身強・戊寅大運", data:JIA,  headerBg:"#14532d", headerAccent:"#dcfce7", dotActive:"#4ade80", dotInactive:"#166534", navBg:"#166634", todayColor:"#15803d", bodyBg:"#f0fdf4" },
+};
+
+function Dot({ hex }) {
+  return <div style={{ width:12, height:12, borderRadius:"50%", background:hex, flexShrink:0, border:"1px solid rgba(0,0,0,0.1)" }}/>;
+}
+
+function DayCard({ d, isToday, todayColor }) {
+  const s = STYLE[d.rating];
+  return (
+    <div style={{ background:"#fff", borderRadius:12,
+      border:`2px solid ${isToday ? todayColor : s.border}`,
+      padding:"8px 7px", display:"flex", flexDirection:"column",
+      alignItems:"center", gap:3, position:"relative",
+      boxShadow: isToday ? `0 2px 10px ${todayColor}33` : "0 1px 3px rgba(0,0,0,0.05)" }}>
+
+      {isToday && (
+        <div style={{ position:"absolute", top:-9, left:"50%", transform:"translateX(-50%)",
+          background:todayColor, color:"#fff", fontSize:9, fontWeight:700,
+          padding:"1px 7px", borderRadius:99, whiteSpace:"nowrap" }}>今天</div>
+      )}
+
+      <div style={{ display:"flex", alignItems:"center", gap:4, justifyContent:"center" }}>
+        <span style={{ fontSize:15, lineHeight:1 }}>{d.emoji}</span>
+        <div style={{ textAlign:"center" }}>
+          <div style={{ fontSize:14, fontWeight:800, color:"#1c1917", lineHeight:1 }}>{d.date}</div>
+          <div style={{ fontSize:9.5, color:"#78716c", marginTop:1 }}>週{d.wd}</div>
+        </div>
+      </div>
+
+      <div style={{ fontSize:12, fontWeight:700, color:"#1c1917", textAlign:"center", lineHeight:1.2 }}>{d.title}</div>
+
+      <div style={{ display:"flex", alignItems:"center", gap:4 }}>
+        <div style={{ fontSize:9.5, background:s.badge, color:"#fff", borderRadius:4, padding:"2px 6px", fontWeight:600 }}>{d.god}</div>
+        <div style={{ fontSize:9.5, color:"#a8a29e" }}>{d.pillar}</div>
+      </div>
+
+      <div style={{ width:"100%", height:1, background:`${s.border}44` }}/>
+
+      <div style={{ width:"100%", display:"flex", flexDirection:"column", gap:2.5 }}>
+        {[["幸運",d.lucky,d.luckyN],["穿著",d.wear,d.wearN],["避免",d.avoid,d.avoidN]].map(([lb,hex,name])=>(
+          <div key={lb} style={{ display:"flex", alignItems:"center", gap:4 }}>
+            <span style={{ fontSize:9, color:"#78716c", width:22, flexShrink:0 }}>{lb}</span>
+            <Dot hex={hex}/>
+            <span style={{ fontSize:9, color:"#57534e" }}>{name}</span>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ width:"100%", height:1, background:`${s.border}44` }}/>
+      <div style={{ fontSize:9.5, color:"#78716c", textAlign:"center", lineHeight:1.4, width:"100%" }}>
+        ⚠️ {d.warn}
+      </div>
+    </div>
+  );
+}
+
+function FeaturedCard({ d }) {
+  const s = STYLE[d.rating];
+  return (
+    <div style={{ background:"#fff", borderRadius:14, border:`2px solid ${s.border}`,
+      padding:"12px 14px", boxShadow:`0 2px 12px ${s.border}33` }}>
+      <div style={{ display:"flex", alignItems:"flex-start", gap:12, marginBottom:10 }}>
+        <div style={{ background:s.bg, borderRadius:10, padding:"8px 12px", textAlign:"center",
+          flexShrink:0, border:`1px solid ${s.border}55` }}>
+          <div style={{ fontSize:24, lineHeight:1 }}>{d.emoji}</div>
+          <div style={{ fontSize:14, fontWeight:800, color:"#1c1917", marginTop:4 }}>{d.date}</div>
+          <div style={{ fontSize:10, color:"#78716c" }}>週{d.wd}</div>
+          <div style={{ fontSize:10, background:s.badge, color:"#fff", borderRadius:4, padding:"2px 6px", marginTop:4, fontWeight:600 }}>{d.god}</div>
+        </div>
+        <div style={{ flex:1 }}>
+          <div style={{ fontSize:16, fontWeight:800, color:"#1c1917", marginBottom:3 }}>
+            {d.title}
+            <span style={{ fontSize:10, color:"#a8a29e", fontWeight:400, marginLeft:6 }}>{d.pillar}</span>
+          </div>
+          <div style={{ fontSize:12, color:"#44403c", lineHeight:1.6, marginBottom:8 }}>{d.desc}</div>
+          <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+            {[["🍀","幸運",d.lucky,d.luckyN],["👕","穿著",d.wear,d.wearN],["🚫","避免",d.avoid,d.avoidN]].map(([ic,lb,hex,name])=>(
+              <div key={lb} style={{ display:"flex", alignItems:"center", gap:4, background:"#f5f5f4", borderRadius:6, padding:"4px 7px" }}>
+                <span style={{ fontSize:10 }}>{ic}</span>
+                <Dot hex={hex}/>
+                <span style={{ fontSize:10, color:"#57534e", fontWeight:500 }}>{name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
+        <div style={{ fontSize:11.5, color:s.badge, background:s.bg, borderRadius:8, padding:"7px 10px", lineHeight:1.55, borderLeft:`3px solid ${s.border}` }}>
+          ⚠️ <strong>注意：</strong>{d.warn}
+        </div>
+        <div style={{ fontSize:11.5, color:"#374151", background:"#f0fdf4", borderRadius:8, padding:"7px 10px", lineHeight:1.55, borderLeft:"3px solid #22c55e" }}>
+          💡 <strong>建議：</strong>{d.tip}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [person, setPerson] = useState("ding");
+  const [wk, setWk] = useState(1);
+  const p = PEOPLE[person];
+  const weekCfg = WEEKS[wk];
+  const weekData = p.data.slice(...weekCfg.slice);
+  const best = [...weekData].sort((a,b) => b.score - a.score)[0];
+  const gridDays = weekCfg.partial ? weekData : weekData.slice(0,6);
+  const cols = weekCfg.partial ? weekData.length : 3;
+
+  return (
+    <div style={{ height:"100vh", display:"flex", flexDirection:"column",
+      background:p.bodyBg, maxWidth:430, margin:"0 auto", overflow:"hidden",
+      transition:"background .3s" }}>
+
+      {/* Person switcher */}
+      <div style={{ background:p.headerBg, padding:"10px 16px 0", flexShrink:0, transition:"background .3s" }}>
+        <div style={{ display:"flex", background:"rgba(255,255,255,0.1)", borderRadius:10, padding:3, marginBottom:10 }}>
+          {Object.entries(PEOPLE).map(([key, val])=>(
+            <button key={key} onClick={()=>{ setPerson(key); setWk(1); }} style={{
+              flex:1, padding:"8px 0", borderRadius:8,
+              background: person===key ? "rgba(255,255,255,0.2)" : "transparent",
+              border:"none", color: person===key ? val.headerAccent : "rgba(255,255,255,0.4)",
+              fontSize:14, fontWeight: person===key ? 700 : 400,
+              cursor:"pointer", transition:"all .2s",
+            }}>{val.name}</button>
+          ))}
+        </div>
+
+        {/* Week nav */}
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:8 }}>
+          <button onClick={()=>setWk(w=>Math.max(0,w-1))} disabled={wk===0}
+            style={{ background:wk===0?"transparent":p.navBg, border:"none", borderRadius:8,
+              padding:"5px 12px", color:wk===0?"rgba(255,255,255,0.2)":p.headerAccent,
+              fontSize:20, cursor:wk===0?"default":"pointer", lineHeight:1 }}>‹</button>
+          <div style={{ textAlign:"center" }}>
+            <div style={{ fontSize:10, color:"rgba(255,255,255,0.4)", letterSpacing:2, marginBottom:2 }}>
+              2026年五月・{p.sub}
+            </div>
+            <div style={{ fontSize:15, fontWeight:700, color:p.headerAccent, letterSpacing:1 }}>
+              {weekCfg.label}
+            </div>
+          </div>
+          <button onClick={()=>setWk(w=>Math.min(WEEKS.length-1,w+1))} disabled={wk===WEEKS.length-1}
+            style={{ background:wk===WEEKS.length-1?"transparent":p.navBg, border:"none", borderRadius:8,
+              padding:"5px 12px", color:wk===WEEKS.length-1?"rgba(255,255,255,0.2)":p.headerAccent,
+              fontSize:20, cursor:wk===WEEKS.length-1?"default":"pointer", lineHeight:1 }}>›</button>
+        </div>
+
+        {/* Week dots */}
+        <div style={{ display:"flex", justifyContent:"center", gap:6, paddingBottom:10 }}>
+          {WEEKS.map((_,i)=>(
+            <div key={i} onClick={()=>setWk(i)} style={{ width:wk===i?20:6, height:6, borderRadius:99,
+              background:wk===i?p.dotActive:p.dotInactive, cursor:"pointer", transition:"all .2s" }}/>
+          ))}
+        </div>
+      </div>
+
+      {/* Content */}
+      <div style={{ flex:1, padding:"10px 10px 8px", display:"flex",
+        flexDirection:"column", gap:8, minHeight:0, overflow:"hidden" }}>
+        <div style={{ display:"grid", gridTemplateColumns:`repeat(${cols},1fr)`,
+          gap:8, flex:weekCfg.partial?"0 0 auto":3, minHeight:0 }}>
+          {gridDays.map(d => <DayCard key={d.date} d={d} isToday={d.date==="5/4"} todayColor={p.todayColor}/>)}
+        </div>
+        <div style={{ flexShrink:0 }}>
+          <div style={{ fontSize:10, color:"#a8a29e", marginBottom:4, paddingLeft:2, letterSpacing:1 }}>本週最佳日</div>
+          <FeaturedCard d={best}/>
+        </div>
+        <div style={{ textAlign:"center", fontSize:10, color:"#a8a29e", letterSpacing:1, flexShrink:0 }}>
+          五月衝刺，收穫就在不遠處 ✨
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
